@@ -2,7 +2,7 @@ import {blankState,validate} from './core.mjs';
 import {checkConfig,equal,reconcile,digest,fromBase64,toBase64} from './sync-core.mjs';
 const bucket='/storage/v1/object/campus-documents/';
 export class SupabaseRemote {
- constructor(storage=localStorage,fetcher=fetch,prefix='campus-sync-v1'){this.storage=storage;this.fetcher=fetcher;this.prefix=prefix}
+ constructor(storage=localStorage,fetcher=fetch,prefix='campus-sync-v1'){this.storage=storage;this.fetcher=(...args)=>Reflect.apply(fetcher,globalThis,args);this.prefix=prefix}
  get config(){return JSON.parse(this.storage.getItem(this.prefix+'-config')||'null')}
  get session(){return JSON.parse(this.storage.getItem(this.prefix+'-session')||'null')}
  configure(url,key){const c=checkConfig(url.trim(),key.trim());this.storage.setItem(this.prefix+'-config',JSON.stringify(c));return c}
@@ -10,7 +10,7 @@ export class SupabaseRemote {
   const c=this.config;if(!c)throw Error('Set up your Supabase connection first.');
   const headers={apikey:c.key};if(token)headers.Authorization='Bearer '+token;
   if(body)headers['Content-Type']=raw?'application/octet-stream':'application/json';
-  let response;try{response=await this.fetcher(c.url+path,{method,headers,body:body?(raw?body:JSON.stringify(body)):undefined,signal:AbortSignal.timeout(45000),cache:'no-store'})}catch{throw Error('Could not reach Supabase. Changes are saved on this device; reconnect and try again.')}
+  let response;try{response=await this.fetcher(c.url+path,{method,headers,body:body?(raw?body:JSON.stringify(body)):undefined,signal:AbortSignal.timeout(45000),cache:'no-store'})}catch(e){throw Error(e.name==='TimeoutError'?'Supabase took too long to respond. Your local records are safe; try again.':'Could not reach Supabase. Changes are saved on this device; reconnect and try again.')}
   if(!response.ok){let data;try{data=await response.json()}catch{};const error=Error(response.status===401?'Please sign in again. Your local changes are safe.':response.status===403?'Access denied. Check the Campus database and storage policies.':data?.msg||data?.message||data?.error_description||'Supabase request failed ('+response.status+').');error.status=response.status;error.code=data?.error||data?.code;throw error}
   if(raw&&method==='GET')return new Uint8Array(await response.arrayBuffer());
   const text=await response.text();return text?JSON.parse(text):null;

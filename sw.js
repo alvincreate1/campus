@@ -1,5 +1,5 @@
 // Cache only public application files. Never cache auth, API or document requests.
-const CACHE='campus-shell-1.0.2';
+const CACHE='campus-shell-1.0.3';
 const FILES=['./','./index.html','./style.css','./app.js','./core.mjs','./sync.mjs','./sync-core.mjs','./config.mjs','./icon.svg','./icon-192.png','./icon-512.png','./manifest.webmanifest'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('campus-shell-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));

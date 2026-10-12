@@ -1,5 +1,5 @@
 import {syncConfig} from './config.mjs';
-import {SupabaseRemote,SyncEngine} from './sync.mjs';
+import {SupabaseRemote,SyncEngine} from './sync.mjs?v=1.0.3';
 import {statuses,courseStatuses,closed,appleNow,uuid,today,iso,day,blankState,application,course,safeURL,validate,encode,decode,merge,migrate,filterApps,due} from './core.mjs';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const paths={home:'M3 10 12 3l9 7M5 9v12h5v-7h4v7h5V9',briefcase:'M3 7h18v14H3zM8 7V3h8v4M3 12h18M10 12v3h4v-3',book:'M12 5v16M12 5C9 2 4 3 2 4v16c4-2 7-1 10 1 3-2 6-3 10-1V4c-4-1-7-2-10 1',folder:'M3 5h7l2 3h9v13H3z',plus:'M12 5v14M5 12h14',arrow:'M5 12h14m-5-5 5 5-5 5',chevron:'m9 5 7 7-7 7',search:'M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0',calendar:'M4 5h16v16H4zM8 3v4m8-4v4M4 10h16',layers:'m3 7 9-5 9 5-9 5-9-5m0 5 9 5 9-5m-18 5 9 5 9-5',star:'m12 3 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z',check:'m5 12 4 4L20 5',clock:'M12 8v5l3 2M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0',close:'m6 6 12 12M6 18 18 6',copy:'M8 8h13v13H8zM4 16H2V2h14v2',external:'M14 3h7v7M21 3l-11 11M10 3H3v18h18v-7',download:'M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5',upload:'M12 16V4m-5 5 5-5 5 5M4 17v4h16v-4',file:'M5 2h9l5 5v15H5zM14 2v6h5M8 12h8m-8 4h8',edit:'m4 16 12-12 4 4L8 20H4zM14 6l4 4',archive:'M3 3h18v5H3zM5 8v13h14V8M9 12h6',trash:'M3 6h18M8 6V3h8v3M5 6l1 15h12l1-15M10 10v7m4-7v7',person:'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0M4 22v-3a8 8 0 0 1 16 0v3',send:'m2 3 20 9-20 9 4-9-4-9m4 9h16',menu:'M4 6h16M4 12h16M4 18h16',sun:'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5',moon:'M20.5 13a8.5 8.5 0 1 1-9.5-9.5A7 7 0 0 0 20.5 13',spark:'m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z'};
@@ -20,7 +20,7 @@ async function commit(edit,message='Saved'){if(busy)return false;busy=true;try{c
 let channel=typeof BroadcastChannel!=='undefined'?new BroadcastChannel('campus-local-updates'+(testMode?'-qa':'')):null;
 if(channel)channel.onmessage=async()=>{real=validate(await read());state=real;render()};
 function showError(message){const el=dialog.open?dialog.querySelector('.form-error'):null;if(el){el.textContent=message;el.scrollIntoView({block:'nearest'})}else toast(message)}
-const VERSION='1.0.2';
+const VERSION='1.0.3';
 let sidebarOpen=false;
 const smallScreen=matchMedia('(max-width:760px)'),systemTheme=matchMedia('(prefers-color-scheme:dark)');
 let themeChoice=null;try{themeChoice=localStorage.getItem('campus-appearance')}catch{}
